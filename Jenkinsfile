@@ -10,20 +10,18 @@ node {
              'NEXUS_URL = "192.168.99.77:8081"', 
              'NEXUS_RELEASE_REPOSITORY = "my-app-release"', 
              'NEXUS_SNAPSHOT_REPOSITORY = "my-app-snapshot"', 
-             'NEXUS_CREDENTIAL_ID = "nexus"',
-             'ARTIFACT_ID = "myweb"',
-             'GROUP_ID = "in.javahome"']) {
+             'NEXUS_CREDENTIAL_ID = "nexus"']) {
         stage("Upload to Nexus") {
             script {
                 def mavenPom = readMavenPom file: 'pom.xml' 
                 //def nexusRepoName = mavenPom.version.endsWith("SNAPSHOT") ? ${NEXUS_SNAPSHOT_REPOSITORY} : ${NEXUS_RELEASE_REPOSITORY}
                 nexusArtifactUploader artifacts: [
-                    [artifactId: "${ARTIFACT_ID}", 
+                    [artifactId: 'myweb', 
                      classifier: '', 
-                     file: "target/${ARTIFACT_ID}-${mavenPom.version}.war", 
+                     file: "target/myweb-${mavenPom.version}.war", 
                      type: 'war']], 
                     credentialsId: "${NEXUS_CREDENTIAL_ID}", 
-                    groupId: "${GROUP_ID}", 
+                    groupId: 'in.javahome', 
                     nexusUrl: "${NEXUS_URL}", 
                     nexusVersion: "${NEXUS_VERSION}", 
                     protocol: "${NEXUS_PROTOCOL}", 
