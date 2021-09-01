@@ -5,6 +5,11 @@ node {
     stage('Comple-Package') {
         sh 'mvn clean package'
     }
+    stage('SonarQube Analysis') {
+        withSonarQubeEnv(credentialsId: 'sonarqube') {
+            sh 'mvn sonar:sonar'
+        }
+    }
 //     stage("Upload to Nexus") {
 //         script {
 //             def mavenPom = readMavenPom file: 'pom.xml' 
@@ -23,19 +28,19 @@ node {
 //                 version: "${mavenPom.version}"
 //         }
 //     }
-    stage('Build Docker Image') {
-        sh 'docker build -t kelvinduan/webapp:1.0.0 .'
-    }
-    stage('Push Docker Image to GitHub') {
-        withCredentials([string(credentialsId: 'docker-password', variable: 'dockerPwd')]) {
-            sh "docker login -u kelvinduan -p ${dockerPwd}"
-        }
-        sh 'docker push kelvinduan/webapp:1.0.0'
-    }
-    stage('Run Docker Container on Vagrant App Server') {
-        def dockerRun = 'docker run -p 8080:8080 -d --name myapp kelvinduan/webapp:1.0.0'
-        sshagent(['app-server']) {
-            sh "ssh -o StrictHostKeyChecking=no vagrant@192.168.99.88 ${dockerRun}"
-        }
-    }
+//     stage('Build Docker Image') {
+//         sh 'docker build -t kelvinduan/webapp:1.0.0 .'
+//     }
+//     stage('Push Docker Image to GitHub') {
+//         withCredentials([string(credentialsId: 'docker-password', variable: 'dockerPwd')]) {
+//             sh "docker login -u kelvinduan -p ${dockerPwd}"
+//         }
+//         sh 'docker push kelvinduan/webapp:1.0.0'
+//     }
+//     stage('Run Docker Container on Vagrant App Server') {
+//         def dockerRun = 'docker run -p 8080:8080 -d --name myapp kelvinduan/webapp:1.0.0'
+//         sshagent(['app-server']) {
+//             sh "ssh -o StrictHostKeyChecking=no vagrant@192.168.99.88 ${dockerRun}"
+//         }
+//     }
 }
