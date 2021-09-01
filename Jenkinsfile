@@ -27,8 +27,8 @@ node {
         sh 'docker build -t kelvinduan/webapp:1.0.0 .'
     }
     stage('Push Docker Image to GitHub') {
-        withCredentials([string(credentialsId: 'github-pwd', variable: 'github-password')]) {
-            sh "docker login -u kelvinduan -p ${github-password}"
+        withCredentials([string(credentialsId: 'docker-password', variable: 'dockerPwd')]) {
+            sh "docker login -u kelvinduan -p ${dockerPwd}"
         }
         sh 'docker push kelvinduan/webapp:1.0.0'
     }
