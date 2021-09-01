@@ -16,7 +16,7 @@ node {
         stage("Upload to Nexus") {
             script {
                 def mavenPom = readMavenPom file: 'pom.xml' 
-                def nexusRepoName = mavenPom.version.endsWith("SNAPSHOT") ? ${NEXUS_SNAPSHOT_REPOSITORY} : ${NEXUS_RELEASE_REPOSITORY}
+                //def nexusRepoName = mavenPom.version.endsWith("SNAPSHOT") ? ${NEXUS_SNAPSHOT_REPOSITORY} : ${NEXUS_RELEASE_REPOSITORY}
                 nexusArtifactUploader artifacts: [
                     [artifactId: "${ARTIFACT_ID}", 
                      classifier: '', 
@@ -27,7 +27,7 @@ node {
                     nexusUrl: "${NEXUS_URL}", 
                     nexusVersion: "${NEXUS_VERSION}", 
                     protocol: "${NEXUS_PROTOCOL}", 
-                    repository: "${nexusRepoName}", 
+                    repository: "${NEXUS_RELEASE_REPOSITORY}", 
                     version: "${mavenPom.version}"
             }
         }
