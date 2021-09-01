@@ -16,7 +16,7 @@ node {
                  type: 'war']], 
                 credentialsId: 'nexus', 
                 groupId: 'in.javahome', 
-                nexusUrl: '192.168.99.77:8081', 
+                nexusUrl: '192.168.99.88:8081', 
                 nexusVersion: 'nexus3', 
                 protocol: 'http', 
                 repository: 'my-app-release', 
@@ -36,7 +36,7 @@ node {
         def dockerRun = 'docker run -p 8080:8080 -d --name myapp kelvinduan/myapp:1.0.0'
         
         sshagent(['app-server']) {
-            sh "ssh -o StrictHostKeyChecking=no vagrant@192.168.99.100 ${dockerRun}"
+            sh "ssh -o StrictHostKeyChecking=no vagrant@192.168.99.88 ${dockerRun}"
         }
     }
 }
