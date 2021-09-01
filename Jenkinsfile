@@ -24,16 +24,16 @@ node {
 //         }
 //     }
     stage('Build Docker Image') {
-        sh 'sudo docker build -t kelvinduan/myapp:1.0.0 .'
+        sh 'docker build -t kelvinduan/myapp:1.0.0 .'
     }
     stage('Push Docker Image to GitHub') {
         withCredentials([string(credentialsId: 'github-pwd', variable: 'github-password')]) {
-            sh "sudo docker login -u kelvinduan -p ${github-password}"
+            sh "docker login -u kelvinduan -p ${github-password}"
         }
-        sh 'sudo docker push kelvinduan/myapp:1.0.0'
+        sh 'docker push kelvinduan/myapp:1.0.0'
     }
     stage('Run Docker Container on Vagrant App Server') {
-        def dockerRun = 'sudo docker run -p 8080:8080 -d --name myapp kelvinduan/myapp:1.0.0'
+        def dockerRun = 'docker run -p 8080:8080 -d --name myapp kelvinduan/myapp:1.0.0'
         
         sshagent(['app-server']) {
             sh "ssh -o StrictHostKeyChecking=no vagrant@192.168.99.88 ${dockerRun}"
