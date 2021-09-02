@@ -18,8 +18,7 @@ node {
         def stopContainer = 'docker rm -f myapp && docker rmi kelvinduan/webapp:latest'
         def dockerRun = 'docker run -p 8080:8080 -d --name myapp kelvinduan/webapp:latest'
         sshagent(['app-server']) {
-            sh "ssh -o StrictHostKeyChecking=no vagrant@192.168.99.88 ${stopContainer} "
-            sh "ssh -o StrictHostKeyChecking=no vagrant@192.168.99.88 ${dockerRun}"
+            sh "ssh -o StrictHostKeyChecking=no vagrant@192.168.99.88 ${stopContainer} && ${dockerRun}"
         }
     }
 }
