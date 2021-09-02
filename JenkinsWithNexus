@@ -5,7 +5,7 @@ node {
     stage('Comple-Package') {
         sh 'mvn clean package'
     }
-    stage("Upload to Nexus") {
+    stage('Upload to Nexus') {
         script {
             def mavenPom = readMavenPom file: 'pom.xml' 
             //def nexusRepoName = mavenPom.version.endsWith("SNAPSHOT") ? ${NEXUS_SNAPSHOT_REPOSITORY} : ${NEXUS_RELEASE_REPOSITORY}
