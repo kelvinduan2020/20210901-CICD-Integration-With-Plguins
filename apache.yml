@@ -1,16 +1,16 @@
 ---
 - hosts: webservers 
-  become: True
+  become: true
   tasks:
     - name: Install packages
       apt:
-        name: "httpd"
-        state: "present"
+        name: "apache2"
+        state: "latest"
     - name: Start Apache server
       service:
         name: httpd
         state: started
-        enabled: True
+        enabled: true
     - name: Deploy static website
       copy:
         src: index.html
