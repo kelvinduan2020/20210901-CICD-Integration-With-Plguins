@@ -1,0 +1,21 @@
+node {
+    stage('SCM Checkout') {
+        git branch: 'main', url: 'https://github.com/kelvinduan2020/20210901-my-app'
+    }
+    stage('Comple-Package') {
+        sh 'mvn clean package'
+    }
+    stage('SonarQube Analysis') {
+        withSonarQubeEnv(credentialsId: 'sonarqube') {
+            sh 'mvn sonar:sonar'
+        }
+    }
+    stage("Quality Gate Status Check"){
+        timeout(time: 1, unit: 'HOURS') {
+            def qg = waitForQualityGate()
+            if (qg.status != 'OK') {
+                error "Pipeline aborted due to quality gate failure: ${qg.status}"
+            }
+        }
+    }
+}
