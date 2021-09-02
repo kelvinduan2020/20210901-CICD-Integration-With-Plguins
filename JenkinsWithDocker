@@ -1,29 +1,29 @@
 node {
-    environment {
-        dockerImageTag = 'kelvinduan/webapp:latest'
-        containerName = 'myapp'
-    }
     stage('SCM Checkout') {
         git branch: 'main', url: 'https://github.com/kelvinduan2020/20210901-my-app'
     }
     stage('Comple-Package') {
         sh 'mvn clean package'
     }
-    stage('Build Docker Image') {
-        sh "docker build -t ${dockerImageTag} ."
-    }
-    stage('Push Docker Image to DockerHub') {
-        withCredentials([string(credentialsId: 'docker-password', variable: 'dockerPwd')]) {
-            sh "docker login -u kelvinduan -p ${dockerPwd}"
+    
+    withEnv(['dockerImageTag=kelvinduan/webapp:latest',
+             'containerName=myapp']) {
+        stage('Build Docker Image') {
+            sh "docker build -t ${dockerImageTag} ."
         }
-        sh "docker push ${dockerImageTag}"
-    }
-    stage('Run Docker Container on Vagrant App Server') {
-        def stopContainer = "docker rm -f ${containerName} && docker rmi ${dockerImageTag}"
-        def dockerRun = "docker run -p 8080:8080 -d --name ${containerName} ${dockerImageTag}"
-        sshagent(['app-server']) {
-            sh "ssh -o StrictHostKeyChecking=no vagrant@192.168.99.88 ${stopContainer}"
-            sh "ssh -o StrictHostKeyChecking=no vagrant@192.168.99.88 ${dockerRun}"
+        stage('Push Docker Image to DockerHub') {
+            withCredentials([string(credentialsId: 'docker-password', variable: 'dockerPwd')]) {
+                sh "docker login -u kelvinduan -p ${dockerPwd}"
+            }
+            sh "docker push ${dockerImageTag}"
+        }
+        stage('Run Docker Container on Vagrant App Server') {
+            def stopContainer = "docker rm -f ${containerName} && docker rmi ${dockerImageTag}"
+            def dockerRun = "docker run -p 8080:8080 -d --name ${containerName} ${dockerImageTag}"
+            sshagent(['app-server']) {
+                sh "ssh -o StrictHostKeyChecking=no vagrant@192.168.99.88 ${stopContainer}"
+                sh "ssh -o StrictHostKeyChecking=no vagrant@192.168.99.88 ${dockerRun}"
+            }
         }
     }
 }
