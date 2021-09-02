@@ -15,8 +15,8 @@ node {
         sh 'docker push kelvinduan/webapp:1.0.0'
     }
     stage('Run Docker Container on Vagrant App Server') {
-        def stopContainer = 'docker stop myapp'
-        def dockerRun = 'docker run -p 8080:8080 -d --rm --name myapp kelvinduan/webapp:1.0.0'
+        def stopContainer = 'docker rm -f myapp'
+        def dockerRun = 'docker run -p 8080:8080 -d --name myapp kelvinduan/webapp:1.0.0'
         sshagent(['app-server']) {
             sh "ssh -o StrictHostKeyChecking=no vagrant@192.168.99.88 ${stopContainer} && sleep 20 && ${dockerRun}"
         }
