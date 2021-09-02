@@ -1,0 +1,15 @@
+node {
+    stage('SCM Checkout') {
+        git branch: 'main', url: 'https://github.com/kelvinduan2020/20210901-my-app'
+    }
+    stage('Comple-Package') {
+        sh 'mvn clean package'
+    }
+    stage('Deploy to Tomcat') {
+        def dockerCopy = 'docker cp /tmp/*.war webapp:/usr/local/tomcat/webapps/'
+        sshagent(['sonar-tomcat']) {
+            sh 'scp -o StrictHostKeyChecking=no target/*.war vagrant@192.168.99.66:/tmp/'
+            sh "ssh -o StrictHostKeyChecking=no vagrant@192.168.99.66 ${dockerCopy}"
+        }
+    }
+}
