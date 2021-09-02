@@ -1,4 +1,7 @@
 node {
+    environment {
+        mavenPom = readMavenPom file: 'pom.xml' 
+    }
     stage('SCM Checkout') {
         git branch: 'main', url: 'https://github.com/kelvinduan2020/20210901-my-app'
     }
@@ -6,17 +9,17 @@ node {
         sh 'mvn clean package'
     }
     stage('Build Docker Image') {
-        sh 'docker build -t kelvinduan/webapp:latest .'
+        sh "docker build -t kelvinduan/webapp:${mavenPom.version} ."
     }
     stage('Push Docker Image to DockerHub') {
         withCredentials([string(credentialsId: 'docker-password', variable: 'dockerPwd')]) {
             sh "docker login -u kelvinduan -p ${dockerPwd}"
         }
-        sh 'docker push kelvinduan/webapp:latest'
+        sh "docker push kelvinduan/webapp:${mavenPom.version} "
     }
     stage('Run Docker Container on Vagrant App Server') {
-        def stopContainer = 'docker rm -f myapp && docker rmi kelvinduan/webapp:latest'
-        def dockerRun = 'docker run -p 8080:8080 -d --name myapp kelvinduan/webapp:latest'
+        def stopContainer = "docker rm -f myapp && docker rmi kelvinduan/webapp:${mavenPom.version}"
+        def dockerRun = "docker run -p 8080:8080 -d --name myapp kelvinduan/webapp:${mavenPom.version}"
         sshagent(['app-server']) {
             sh "ssh -o StrictHostKeyChecking=no vagrant@192.168.99.88 ${stopContainer}"
             sh "ssh -o StrictHostKeyChecking=no vagrant@192.168.99.88 ${dockerRun}"
