@@ -4,7 +4,7 @@
   tasks:
     - name: Start the container
       docker_container:
-        name: myapp
+        name: myweb
         image: "kelvinduan/webapp:latest"
         state: started
         published_ports:
