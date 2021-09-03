@@ -1,0 +1,24 @@
+node {
+    stage('SCM Checkout') {
+        git branch: 'main', url: 'https://github.com/kelvinduan2020/20210901-my-app'
+    }
+    withEnv(['dockerImageTag=kelvinduan/webapp:latest',
+             'containerName=myapp']) {
+        stage('Build Docker Image') {
+            sh "docker build -t ${dockerImageTag} ."
+        }
+        stage('Push Docker Image to DockerHub') {
+            withCredentials([string(credentialsId: 'docker-password', variable: 'dockerPwd')]) {
+                sh "docker login -u kelvinduan -p ${dockerPwd}"
+            }
+            sh "docker push ${dockerImageTag}"
+        }        
+        stage('Docker Deploy With Ansible') { 
+            ansiblePlaybook credentialsId: 'jenkins-ansible', 
+            disableHostKeyChecking: true, 
+            installation: 'ansible', 
+            inventory: 'dev.inv', 
+            playbook: 'deploy-docker.yml'
+        }
+    }
+}
