@@ -5,9 +5,18 @@ Jenkins Integration:
 4. Docker      (DONE)
 5. SonarQube   (DONE)
 6. Tomcat      (DONE)
-6. Email       (DONE)
-7. Ansible     (DONE)
-8. Test(JUnit)
-9. Slack
-10. Cloud: AWS,Azure
-11. Kubeneters
+7. Apache      (DONE)
+8. Email       (DONE)
+9. Ansible     (DONE)
+10. Kubernetes (INPROGRESS)
+11. Terraform  (INPROGRESS)
+12. JUNIT      (INPROGRESS)
+13. Selenium   (INPROGRESS)
+
+Cases: Jenkins+Docker+Ansible+K8S
+
+Vault
+Slack
+Splunk - monitoring, searching, analyzing, visualizing and which acts on large amounts of data
+Zabbix - Monitoring Network, Server, Cloud, Application, Service
+Selenium is a free (open-source) automated testing framework used to validate web applications across different browsers and platforms
